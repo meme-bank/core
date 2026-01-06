@@ -5,7 +5,7 @@ updates:
     schedule:
       interval: "weekly"
     open-pull-requests-limit: 10
-    lables:
+    labels:
       - "dependencies"
     commit-message:
       prefix: "Обновление зависимостей: "
