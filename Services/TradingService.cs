@@ -136,5 +136,59 @@ namespace OctopusAPI.Services
         throw;
       }
     }
+
+    public async Task<Product?> SellItemAsync(int sellerId, Guid blueprintId, decimal quantity, decimal price, string currencyId)
+    {
+      using var transaction = await _context.Database.BeginTransactionAsync(System.Data.IsolationLevel.ReadCommitted);
+      try
+      {
+        var item = await _context.Items
+          .Include(i => i.ItemBlueprint)
+          .TagWith("Lock item for sale")
+          .Where(i => i.ItemBlueprintId == blueprintId && i.OwnerId == sellerId)
+          .FirstOrDefaultAsync();
+        if (item == null || item.Amount < quantity)
+          throw new Exception("Продукт недоступен в достаточном количестве.");
+
+        var verifiedQuantity = item.ItemBlueprint.MeasuredIn == MeasuredIn.Pieces
+        ? Math.Floor(quantity)
+        : quantity;
+
+        var product = await _context.Products.Where(i => i.SellerId == sellerId && i.ItemBlueprintId == blueprintId).FirstOrDefaultAsync();
+        var isCreated = product == null;
+        product ??= new Product()
+        {
+          Amount = 0m,
+          CurrencyId = currencyId,
+          ItemBlueprint = item.ItemBlueprint,
+          ItemBlueprintId = blueprintId,
+          Price = 0m,
+          SellerId = sellerId,
+          Currency = await _context.Currencies.FindAsync(currencyId) ?? throw new ArgumentException("Invalid currency ID")
+        };
+
+        item.Amount -= verifiedQuantity;
+        product.Amount += verifiedQuantity;
+        product.Price = price;
+
+        if (product.Amount < 0)
+          throw new Exception("Количество должно быть больше нуля.");
+
+        if (product.Amount == 0 && !isCreated)
+          _context.Products.Remove(product);
+
+        if (product.Amount > 0 && isCreated)
+          _context.Products.Add(product);
+
+        await _context.SaveChangesAsync();
+        await transaction.CommitAsync();
+        return product.Amount > 0 ? product : null;
+      }
+      catch
+      {
+        await transaction.RollbackAsync();
+        throw;
+      }
+    }
   }
 }
