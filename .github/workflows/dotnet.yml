@@ -1,0 +1,35 @@
+name: .NET Build & Test
+
+on:
+  push:
+    branches: [ "main", "master" ]
+  pull_request:
+    branches: [ "main", "master" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Extract .NET version from csproj
+      id: dotnet-version
+      run: |
+        # <TargetFramework>netX.X</TargetFramework>, где X - числа
+        VERSION=$(grep -oP '(?<=<TargetFramework>net)[0-9.]+' OctopusAPI/OctopusAPI.csproj)
+        echo "detected_version=$VERSION" >> $GITHUB_OUTPUT
+    
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: ${{ steps.dotnet-version.outputs.detected_version }}
+
+    - name: Restore dependencies
+      run: dotnet restore
+
+    - name: Build
+      run: dotnet build --no-restore --configuration Release
+
+    - name: Test
+      run: dotnet test --no-build --verbosity normal
