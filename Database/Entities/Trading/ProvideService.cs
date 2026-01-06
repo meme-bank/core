@@ -7,14 +7,15 @@ namespace OctopusAPI.Database.Entities.Trading
     public class ProvideService
     {
         [Key]
-        public required string ServiceId { get; set; }
+        public required Guid ServiceId { get; set; }
         [ForeignKey("ServiceId")]
         public required Service Service { get; set; }
         [Key]
         [Required]
         public int BuyerId { get; set; }
         public decimal Price { get; set; }
-        public required Currency Currency { get; set; }
+        public Currency? Currency { get; set; }
+        public string? CurrencyId { get; set; }
         public ProvideStatus Status { get; set; } = ProvideStatus.Active;
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public DateTime StartAt { get; set; }

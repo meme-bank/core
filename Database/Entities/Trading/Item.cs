@@ -10,7 +10,7 @@ namespace OctopusAPI.Database.Entities.Trading
         [ForeignKey("ItemBlueprintId")]
         public required ItemBlueprint ItemBlueprint { get; set; }
         [Required]
-        public required string OwnerId { get; set; }
+        public required int OwnerId { get; set; }
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public DateTime OwnedAt { get; set; }
         public decimal Amount { get; set; }

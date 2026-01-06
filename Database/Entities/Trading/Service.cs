@@ -20,15 +20,15 @@ namespace OctopusAPI.Database.Entities.Trading
         public required Photo Photo { get; set; }
         public ServiceType Type { get; set; } = ServiceType.Once;
         public int ProviderId { get; set; }
-        public decimal Price { get; set; }
-        [Required]
-        public required string CurrencyId { get; set; }
+        public decimal? Price { get; set; }
+        public string? CurrencyId { get; set; }
         [ForeignKey("CurrencyId")]
-        public required Currency Currency { get; set; }
+        public Currency? Currency { get; set; }
         public List<Category> Categories { get; set; } = new List<Category>();
         public TimeSpan? Duration { get; set; } // Nullable for once services or subscription services with no duration or end date
         [Required]
         public DateTime PublishedAt { get; set; }
+        public bool IsOtherActivate { get; set; } // Активируется вне платформы
 
         public ICollection<ProvideService> ProvideServices { get; set; } = new List<ProvideService>();
     }

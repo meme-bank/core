@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore;
 
 namespace OctopusAPI.Database.Entities.Economic
 {
@@ -13,8 +14,9 @@ namespace OctopusAPI.Database.Entities.Economic
         public required string CurrencyId { get; set; }
         [ForeignKey("CurrencyId")]
         public required Currency Currency { get; set; }
+        [Precision(18, 4)]
         public decimal Balance { get; set; }
-        public DateTime CreatedAt { get; set; }
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         [Required]
         public required string Name { get; set; }
         public string? Description { get; set; }
