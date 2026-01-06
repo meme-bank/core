@@ -1,4 +1,10 @@
 # НБМ API (Проект Octopus)
+![License](https://img.shields.io/badge/license-AGPL--3.0-orange?style=for-the-badge)
+![Last Commit](https://img.shields.io/github/last-commit/meme-bank/api?style=for-the-badge)
+![Repo Size](https://img.shields.io/github/repo-size/meme-bank/api?style=for-the-badge)
+![.NET](https://img.shields.io/badge/.NET-10.0-blueviolet?style=for-the-badge)
+![Build Status](https://img.shields.io/github/checks-status/meme-bank/api/main?style=for-the-badge)
+
 Исходный код ядра, то бишь API, Народного Банка Мемов
 
 ## Лицензия
